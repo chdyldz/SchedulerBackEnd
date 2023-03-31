@@ -10,7 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 @RequestMapping("/event")
@@ -21,6 +26,8 @@ public class EventController {
 
     @Autowired
     private Scheduler scheduler;
+
+    AtomicInteger atomicInteger=new AtomicInteger(0);
 
     @RequestMapping(value = { "/save", "/save/" }, method = RequestMethod.POST)
     public Object save(@RequestBody EventDto event) {
@@ -44,11 +51,12 @@ public class EventController {
         }
     }
 
+
+
     @RequestMapping(value={"/getSchedule","/getSchedule/"},method=RequestMethod.GET)
     public Object getSchedule(){
         try {
-            List<Schedule> allEvents = scheduler.ScheduleProgram(eventService.getAllEvents());
-            return new ResponseEntity<>(allEvents,HttpStatus.OK);
+            return new ResponseEntity<>(scheduler.getEventList(),HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);

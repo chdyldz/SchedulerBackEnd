@@ -10,25 +10,62 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class Scheduler {
+
+    @Autowired
+    private EventService eventService;
     AtomicInteger sum = new AtomicInteger(0);
     AtomicInteger maxSum = new AtomicInteger(0);
-    public List<Schedule> ScheduleProgram( List<Event> events ){
 
 
+    public String getEventList(){
+        Calendar c = new GregorianCalendar();
+        StringBuilder sb=new StringBuilder();
+        List<List<Event>> allEvents = ScheduleProgram(eventService.getAllEvents());
+        for(int i=0;i<allEvents.size();i++){
+            List<Event> events = allEvents.get(i);
+            SimpleDateFormat df = new SimpleDateFormat("HH:mm a");
+            if(i%2==0){
+                c.set( Calendar.AM_PM, Calendar.AM );
+                c.set(Calendar.HOUR,9);
+                c.set(Calendar.MINUTE,0);
+            }
+            else {Event event=new Event();
+                event.setDuration(60);
+                event.setName("Lunch");
+                event.setEventTime("12:00 PM");
+                Collections.reverse(events);
+                events.add(event);
+                Collections.reverse(events);
+                c.set( Calendar.AM_PM, Calendar.PM );
+                c.set(Calendar.HOUR,1);
+                c.set(Calendar.MINUTE,0);
+
+            }
+
+            for(int n=0;n<events.size();n++){
+                if(!events.get(n).getName().equals("Lunch")){
+                    events.get(n).setEventTime(df.format(c.getTime()));
+                    c.add(Calendar.MINUTE,events.get(n).getDuration());
+                }
+                sb.append(events.get(n));
+                sb.append("\n");
+            }
+        }
+        return sb.toString();
+    }
+    public List<List<Event>> ScheduleProgram( List<Event> events ){
         List<List<Event>> subLists = new ArrayList<>();
         events.sort(Comparator.comparing(Event::getDuration).reversed());
         maxSum.set(180);
-
         while (!events.isEmpty()) {
             List<Event> subList = new ArrayList<>();
+
             sum.set(0);
             sum.set(events.stream()
                     .takeWhile(e -> {
@@ -72,9 +109,12 @@ public class Scheduler {
             subLists.add(subList);
             if (subLists.size()%2!=0 && !events.isEmpty()) {
                 maxSum.set(240);
-            }else maxSum.set(180);
+            }else {
+                maxSum.set(180);
+            }
+
         }
-        return null;
+        return subLists;
     }
 
     private Boolean populateAmEvents(Schedule schedule, Event event) {

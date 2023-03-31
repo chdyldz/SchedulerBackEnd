@@ -22,9 +22,12 @@ public class Event {
     @Column(name = "duration", nullable = false)
     public Integer duration;
 
+    @Column(name = "eventTime", nullable = false)
+    public String eventTime;
+
     @Override
     public String toString(){
-        return ""+this.name+" "+this.duration;
+        return this.eventTime+" "+this.name+" "+this.duration+ " min";
     }
 }
 
