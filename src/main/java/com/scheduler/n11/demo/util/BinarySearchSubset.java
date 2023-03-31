@@ -71,7 +71,7 @@ public class BinarySearchSubset {
         return closestSubset;
     }
 
-    public static void main(String[] args) {
+    public void binarySearch(String[] args) {
         int[] a = {15, 30, 30, 45, 60, 60, 45, 30, 15, 60, 30, 30, 45, 60, 60, 45, 30, 15, 60, 30, 30, 45, 60, 60, 45, 30, 15, 60};
         int targetSum = 180;
         int[] subset = binarySearchSubset(a, targetSum);

@@ -1,15 +1,9 @@
 package com.scheduler.n11.demo.util;
 
 import com.scheduler.n11.demo.entity.Event;
-import com.scheduler.n11.demo.model.EventDto;
-import com.scheduler.n11.demo.model.EventList;
-import com.scheduler.n11.demo.model.Schedule;
-import com.scheduler.n11.demo.model.ScheduleList;
 import com.scheduler.n11.demo.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,12 +42,12 @@ public class Scheduler {
 
             }
 
-            for(int n=0;n<events.size();n++){
-                if(!events.get(n).getName().equals("Lunch")){
-                    events.get(n).setEventTime(df.format(c.getTime()));
-                    c.add(Calendar.MINUTE,events.get(n).getDuration());
+            for (Event event : events) {
+                if (!event.getName().equals("Lunch")) {
+                    event.setEventTime(df.format(c.getTime()));
+                    c.add(Calendar.MINUTE, event.getDuration());
                 }
-                sb.append(events.get(n));
+                sb.append(event);
                 sb.append("\n");
             }
         }
@@ -115,30 +109,6 @@ public class Scheduler {
 
         }
         return subLists;
-    }
-
-    private Boolean populateAmEvents(Schedule schedule, Event event) {
-
-            Boolean amEventAddResult = schedule.getAm().addEvent(event);
-            if (!amEventAddResult){
-                schedule.getAm().setNetworking();
-            }
-            return amEventAddResult;
-    }
-
-    private Boolean populatePmEvents(Schedule schedule, Event event) {
-
-        Boolean amEventAddResult = schedule.getPm().addEvent(event);
-        if (!amEventAddResult){
-            schedule.getPm().setNetworking();
-        }
-        return amEventAddResult;
-    }
-
-    private static int compare(Integer a, Integer b) {
-        return a < b ? -1
-                : a > b ? 1
-                : 0;
     }
 
 

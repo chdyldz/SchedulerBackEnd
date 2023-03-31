@@ -6,6 +6,7 @@ import com.scheduler.n11.demo.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 @Service
 public class EventService {
@@ -26,5 +27,20 @@ public class EventService {
         event.setName(eventDto.getName());
         event.setDuration(eventDto.getDuration());
         return eventRepository.save(event);
+    }
+
+    public void removeAll(){
+        eventRepository.deleteAll();
+    }
+
+    public void saveAll(List<EventDto> events){
+        List<Event> eventList=new ArrayList<>();
+        for (EventDto eventDto:events){
+            Event event =new Event();
+            event.setName(eventDto.getName());
+            event.setDuration(eventDto.getDuration());
+            eventList.add(event);
+        }
+        eventRepository.saveAll(eventList);
     }
 }
