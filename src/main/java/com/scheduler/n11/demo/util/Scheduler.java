@@ -119,33 +119,5 @@ public class Scheduler {
         return subLists;
     }
 
-    public List<List<Event>> ScheduleProgramAlg2( List<Event> events ){
-        BinarySearchSubset binarySearchSubset = new BinarySearchSubset();
-        List<List<Event>> wholeSchedule = new ArrayList<>();
-        List<Integer> durationList = new ArrayList<>(events.stream().mapToInt(eventx -> eventx.getDuration()).boxed().toList());
-        maxSum.set(180);
-        while (!durationList.isEmpty()) {
-            List<Event> subList=new ArrayList<>();
-            List<Integer> binarySearchResult = binarySearchSubset.binarySearch(durationList, maxSum.get());
-            binarySearchResult.stream().forEach(sr->durationList.remove(sr));
-            binarySearchResult.stream().
-                    forEach(element->{events.
-                                    stream().
-                                    filter(event->event.getDuration()==element).
-                                    peek(subList::add).findFirst();
-                                events.removeAll(subList);});
-
-            wholeSchedule.add(subList);
-
-            if (wholeSchedule.size()%2!=0 && !events.isEmpty()) {
-                maxSum.set(240);
-            }else {
-                maxSum.set(180);
-            }
-
-        }
-        return wholeSchedule;
-    }
-
 
 }

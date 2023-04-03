@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 @RequestMapping("/event")
@@ -60,16 +59,6 @@ public class EventController {
     @CrossOrigin
     @RequestMapping(value={"/getSchedule","/getSchedule/"},method=RequestMethod.GET)
     public Object getSchedule(){
-        try {
-            return new ResponseEntity<>(scheduler.getEventList(),HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    @CrossOrigin
-    @RequestMapping(value={"/getScheduleAlg2","/getScheduleAlg2/"},method=RequestMethod.GET)
-    public Object getScheduleAlg2(){
         try {
             return new ResponseEntity<>(scheduler.getEventList(),HttpStatus.OK);
         } catch (Exception e) {
