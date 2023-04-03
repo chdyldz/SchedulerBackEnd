@@ -18,7 +18,7 @@ public class Event {
     @Column(name = "duration", nullable = false)
     public Integer duration;
 
-    @Column(name = "eventTime", nullable = false)
+    @Column(name = "eventTime", nullable = true)
     public String eventTime;
 
     @Override

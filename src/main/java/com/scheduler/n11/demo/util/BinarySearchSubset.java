@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import java.util.*;
-
 public class BinarySearchSubset {
 
     public static int[] binarySearchSubset(int[] a, int targetSum) {
@@ -71,11 +69,10 @@ public class BinarySearchSubset {
         return closestSubset;
     }
 
-    public void binarySearch(String[] args) {
-        int[] a = {15, 30, 30, 45, 60, 60, 45, 30, 15, 60, 30, 30, 45, 60, 60, 45, 30, 15, 60, 30, 30, 45, 60, 60, 45, 30, 15, 60};
-        int targetSum = 180;
-        int[] subset = binarySearchSubset(a, targetSum);
-        System.out.println(Arrays.toString(subset));
+    public List<Integer> binarySearch(List<Integer> durationList,int targetSum) {
+        int[] durationArray = durationList.stream().mapToInt(Integer::intValue).toArray();
+        int[] subset = binarySearchSubset(durationArray, targetSum);
+        return new ArrayList<>(Arrays.stream(subset).boxed().toList());
     }
 }
 

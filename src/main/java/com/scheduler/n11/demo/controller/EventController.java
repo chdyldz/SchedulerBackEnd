@@ -20,7 +20,7 @@ public class EventController {
 
     @Autowired
     private Scheduler scheduler;
-
+    @CrossOrigin
     @RequestMapping(value = { "/save", "/save/" }, method = RequestMethod.POST)
     public Object save(@RequestBody EventDto event) {
         try {
@@ -32,7 +32,7 @@ public class EventController {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    @CrossOrigin
     @RequestMapping(value = { "/saveAll", "/saveAll/" }, method = RequestMethod.POST)
     public Object saveAll(@RequestBody List<EventDto> event) {
         try {
@@ -46,7 +46,7 @@ public class EventController {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    @CrossOrigin
     @RequestMapping(value={"/get","/get/"},method=RequestMethod.GET)
     public Object getEventList(){
         try {
@@ -57,8 +57,7 @@ public class EventController {
         }
     }
 
-
-
+    @CrossOrigin
     @RequestMapping(value={"/getSchedule","/getSchedule/"},method=RequestMethod.GET)
     public Object getSchedule(){
         try {
@@ -68,7 +67,17 @@ public class EventController {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    @CrossOrigin
+    @RequestMapping(value={"/getScheduleAlg2","/getScheduleAlg2/"},method=RequestMethod.GET)
+    public Object getScheduleAlg2(){
+        try {
+            return new ResponseEntity<>(scheduler.getEventList(),HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @CrossOrigin
     @RequestMapping(value={"/removeAll","/removeAll/"},method=RequestMethod.GET)
     public Object removeAll(){
         try {eventService.removeAll();

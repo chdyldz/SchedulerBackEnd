@@ -20,7 +20,8 @@ public class Scheduler {
     public String getEventList(){
         Calendar c = new GregorianCalendar();
         StringBuilder sb=new StringBuilder();
-        List<List<Event>> allEvents = ScheduleProgram(eventService.getAllEvents());
+        List<List<Event>> allEvents;
+        allEvents = ScheduleProgram(eventService.getAllEvents());
         for(int i=0;i<allEvents.size();i++){
             List<Event> events = allEvents.get(i);
             SimpleDateFormat df = new SimpleDateFormat("HH:mm a");
@@ -39,6 +40,17 @@ public class Scheduler {
                 c.set( Calendar.AM_PM, Calendar.PM );
                 c.set(Calendar.HOUR,1);
                 c.set(Calendar.MINUTE,0);
+
+                Event networkCheck = events.stream().filter(subEvent -> subEvent.getName().equals("Networking")).findFirst().orElse(null);
+                if(networkCheck==null){
+                    int eventDurationSum = events.stream().filter(e->e.getName()!="Lunch").mapToInt(e -> e.duration).sum();
+                    if(eventDurationSum>180){
+                        Event networkingEvent=new Event();
+                        networkingEvent.setDuration(240-eventDurationSum);
+                        networkingEvent.setName("Networking");
+                        events.add(networkingEvent);
+                    }
+                }
 
             }
 
@@ -73,12 +85,7 @@ public class Scheduler {
                     .mapToInt(e -> e.duration)
                     .sum());
             events.removeAll(subList);
-            if(maxSum.get()==240 && sum.get() >= 180){
-                Event event = new Event();
-                event.setDuration(maxSum.get()-sum.get());
-                event.setName("Networking");
-                subList.add(event);
-            }else if (sum.get() < maxSum.get() && !events.isEmpty()) {
+             if (sum.get() < maxSum.get() && !events.isEmpty()) {
                 Event remove = subList.stream()
                         .filter(e -> e.duration > maxSum.get() - sum.get())
                         .findFirst()
@@ -89,6 +96,7 @@ public class Scheduler {
                     events.add(remove);
                 }
                 if (!events.isEmpty()) {
+                    events.sort(Comparator.comparing(Event::getDuration).reversed());
                     Event add = events.stream()
                             .filter(e -> sum.get() + e.duration == maxSum.get())
                             .findFirst()
@@ -109,6 +117,34 @@ public class Scheduler {
 
         }
         return subLists;
+    }
+
+    public List<List<Event>> ScheduleProgramAlg2( List<Event> events ){
+        BinarySearchSubset binarySearchSubset = new BinarySearchSubset();
+        List<List<Event>> wholeSchedule = new ArrayList<>();
+        List<Integer> durationList = new ArrayList<>(events.stream().mapToInt(eventx -> eventx.getDuration()).boxed().toList());
+        maxSum.set(180);
+        while (!durationList.isEmpty()) {
+            List<Event> subList=new ArrayList<>();
+            List<Integer> binarySearchResult = binarySearchSubset.binarySearch(durationList, maxSum.get());
+            binarySearchResult.stream().forEach(sr->durationList.remove(sr));
+            binarySearchResult.stream().
+                    forEach(element->{events.
+                                    stream().
+                                    filter(event->event.getDuration()==element).
+                                    peek(subList::add).findFirst();
+                                events.removeAll(subList);});
+
+            wholeSchedule.add(subList);
+
+            if (wholeSchedule.size()%2!=0 && !events.isEmpty()) {
+                maxSum.set(240);
+            }else {
+                maxSum.set(180);
+            }
+
+        }
+        return wholeSchedule;
     }
 
 
